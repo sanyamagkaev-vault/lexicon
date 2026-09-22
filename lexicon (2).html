@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexicon — подготовка к TOEFL</title>
+<!-- Ключи Supabase вводятся на экране «Синхронизация» и хранятся в браузере; библиотека грузится по требованию -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12151b; --surface:#1a1f28; --surface-2:#222935; --line:#2e3644;
+  --ink:#e9e6df; --muted:#9aa3b0; --teal:#5fbfae; --teal-dim:#2f5f58;
+  --red:#e0574c; --gold:#d8a441; --white:#f2efe9;
+  --r:14px;
+  --serif:'Newsreader',Georgia,serif; --sans:'Inter',system-ui,-apple-system,sans-serif;
+}
+:root:not([data-theme="light"]){color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 64px}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;border:none;background:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+h1,h2,h3{font-weight:500;margin:0}
+
+/* header */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:26px}
+.brand{font-family:var(--serif);font-size:26px;letter-spacing:.2px}
+.brand small{display:block;font-family:var(--sans);font-size:12px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
+.profile{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+select.pf{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:5px 8px;font-size:13px;font-family:inherit}
+.linkbtn{color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:var(--ink)}
+
+/* home */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.tiles{grid-template-columns:1fr}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 20px 20px;text-align:left;display:block;transition:border-color .15s,transform .1s}
+.tile:active{transform:scale(.99)}
+.tile h2{font-family:var(--serif);font-size:23px;margin-bottom:6px}
+.tile p{margin:0;font-size:13.5px;color:var(--muted)}
+.tile .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-bottom:14px;background:var(--muted)}
+.tile.due{border-color:#5a2a26;background:linear-gradient(180deg,#221618,var(--surface))}
+.tile.due .dot{background:var(--red);box-shadow:0 0 0 4px rgba(224,87,76,.15)}
+.tile.done .dot{background:var(--teal-dim)}
+.tile .status{font-size:12px;color:var(--muted);margin-top:14px}
+.tile.due .status{color:#e08a82}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+.mini{background:transparent;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;text-align:left}
+.mini b{font-weight:500;font-size:15px}
+.mini span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.legend{margin-top:26px;font-size:12.5px;color:var(--muted);line-height:1.9}
+.sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:baseline}
+
+/* session chrome */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}
+.bar .step{font-size:12.5px;color:var(--muted);letter-spacing:.03em}
+.prog{height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin-bottom:24px}
+.prog i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s}
+
+/* flashcard */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:30px 24px;min-height:260px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.term{font-family:var(--serif);font-size:38px;line-height:1.15;text-align:center;color:var(--white)}
+.term.sent{font-size:25px;line-height:1.35;text-align:left}
+.reveal{border:1px dashed var(--line);border-radius:10px;padding:13px 15px;text-align:left;width:100%;color:var(--muted);font-size:14px}
+.reveal:hover{border-color:var(--teal-dim);color:var(--ink)}
+.shown{border-style:solid;border-color:var(--line);color:var(--ink);cursor:default}
+.shown .lab{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.shown .val{font-size:15.5px}
+.shown .val.en{font-family:var(--serif);font-size:17px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--teal)}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:10px}
+.arrow{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);font-size:19px;color:var(--muted);flex:0 0 auto}
+.arrow:hover:not(:disabled){color:var(--ink);border-color:var(--teal-dim)}
+.arrow:disabled{opacity:.3;cursor:default}
+.count{font-size:13px;color:var(--muted)}
+.btn{background:var(--teal);color:#0f1519;border-radius:10px;padding:13px 22px;font-weight:500;width:100%;margin-top:18px}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);margin-top:10px}
+.btn.ghost:hover{color:var(--ink)}
+
+/* matching */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 13px;text-align:left;font-size:14.5px;min-height:56px;display:flex;align-items:center;transition:background .12s,border-color .12s,opacity .2s}
+.opt.en{font-family:var(--serif);font-size:16px}
+.opt.f{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--teal)}
+.opt:hover{border-color:var(--teal-dim)}
+.opt.sel{border-color:var(--teal);background:var(--surface-2)}
+.opt.bad{border-color:var(--red);background:#2a1a1a}
+.opt.good{border-color:var(--teal);background:#16302c}
+.opt.gone{opacity:.18;pointer-events:none}
+.hint{font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* typing */
+.prompt{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.prompt .lab{font-size:11.5px;color:var(--muted);margin-bottom:5px}
+.prompt .big{font-size:21px;line-height:1.35}
+input[type=text]{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 15px;color:var(--ink);font-family:var(--serif);font-size:20px}
+.fb{margin-top:14px;font-size:14.5px;min-height:22px}
+.fb.ok{color:var(--teal)}
+.fb.no{color:var(--red)}
+
+/* builder */
+.slot{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-height:92px;padding:11px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;margin-bottom:14px}
+.bank{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.tok{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-family:var(--serif);font-size:17px}
+.tok:hover{border-color:var(--teal-dim)}
+.tok.used{opacity:.22;pointer-events:none}
+
+/* dictionary */
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.tab.on{background:var(--surface-2);color:var(--ink);border-color:var(--teal-dim)}
+.entry{border-bottom:1px solid var(--line);padding:13px 0;display:flex;gap:12px;align-items:flex-start}
+.entry .mark{flex:0 0 auto;width:7px;height:7px;border-radius:50%;margin-top:9px;background:var(--white)}
+.entry.err .mark{background:var(--red)}
+.entry.mast .mark{background:var(--gold)}
+.entry.raw .mark{background:var(--muted)}
+.entry.raw .hw{color:var(--muted)}
+.entry .hw{font-family:var(--serif);font-size:19px;color:var(--white)}
+.entry.err .hw{color:var(--red)}
+.entry.mast .hw{color:var(--gold)}
+.entry .sub{font-size:13.5px;color:var(--muted);margin-top:2px}
+.entry .meta{margin-left:auto;font-size:11.5px;color:var(--muted);text-align:right;flex:0 0 auto;padding-left:10px}
+.empty{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
+.done-wrap{text-align:center;padding:40px 0}
+.done-wrap h2{font-family:var(--serif);font-size:30px;margin-bottom:10px}
+.done-wrap p{color:var(--muted);font-size:14.5px;margin:0 0 6px}
+.hidden{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Lexicon<small>TOEFL iBT · B2–C1</small></div>
+    <div class="profile" id="pfBox"></div>
+  </div>
+  <div id="view"></div>
+</div>
+<script>
+const WORDS=[
+["significant","important; considerable","значительный, существенный"],
+["substantial","large; sizeable","существенный, значительный"],
+["crucial","extremely important","решающий, ключевой"],
+["essential","necessary; basic","необходимый, важнейший"],
+["impact","effect; influence","влияние, воздействие"],
+["factor","cause; element","фактор"],
+["benefit","advantage; good effect","польза, преимущество"],
+["approach","method; way of doing sth","подход"],
+["acquire","get; gain","приобретать, овладевать"],
+["obtain","get; be given","получать"],
+["demonstrate","show; prove","демонстрировать, доказывать"],
+["indicate","show; suggest","указывать (на), свидетельствовать"],
+["require","need; demand","требовать, нуждаться"],
+["establish","set up; prove firmly","устанавливать, учреждать"],
+["maintain","keep; go on saying","поддерживать; утверждать"],
+["enhance","improve; make better","улучшать, усиливать"],
+["undermine","weaken gradually","подрывать, ослаблять"],
+["mitigate","reduce; make less severe","смягчать, уменьшать"],
+["alleviate","ease; relieve","облегчать, смягчать"],
+["exacerbate","make worse","усугублять, обострять"],
+["facilitate","make easier; help","способствовать, облегчать"],
+["hinder","get in the way of; slow down","препятствовать, мешать"],
+["emerge","appear; come out","возникать, появляться"],
+["diminish","become smaller; reduce","уменьшать(ся), убывать"],
+["accumulate","build up; collect","накапливать(ся)"],
+["allocate","give out; set aside for","распределять, выделять"],
+["implement","carry out; put into practice","внедрять, осуществлять"],
+["pursue","follow; try to achieve","преследовать (цель), заниматься"],
+["sustain","keep going; support","поддерживать, выдерживать"],
+["retain","keep; hold on to","сохранять, удерживать"],
+["attribute (to)","say sth is caused by","приписывать, объяснять (чем-л.)"],
+["derive (from)","come from; get from","происходить (от), извлекать"],
+["comprise","consist of; be made up of","состоять из, включать"],
+["constitute","make up; amount to","составлять, представлять собой"],
+["emphasise","stress; give weight to","подчёркивать, акцентировать"],
+["highlight","draw attention to","выделять, подчёркивать"],
+["address (an issue)","deal with; take on","заниматься (проблемой), решать"],
+["tackle","deal with; take on","решать (проблему), браться за"],
+["arise","come up; happen","возникать"],
+["justify","give good reasons for","обосновывать, оправдывать"],
+["advocate","publicly support","выступать за, отстаивать"],
+["acknowledge","admit; accept as true","признавать"],
+["assert","state firmly","утверждать, заявлять"],
+["claim","say without proof","утверждать, заявлять"],
+["assume","suppose; take for granted","предполагать, допускать"],
+["imply","suggest without saying","подразумевать, намекать"],
+["infer","work out; conclude","делать вывод, заключать"],
+["perceive","see; understand as","воспринимать"],
+["anticipate","expect; prepare for","предвидеть, ожидать"],
+["undertake","take on; commit to doing","предпринимать, браться за"],
+["evident","clear; easy to see","очевидный, явный"],
+["apparent","clear; seeming to be true","очевидный; кажущийся"],
+["explicit","clear and direct; stated openly","явный, прямо выраженный"],
+["implicit","suggested but not stated","подразумеваемый, неявный"],
+["ambiguous","unclear; open to two readings","двусмысленный, неоднозначный"],
+["coherent","logical; well put together","связный, логичный"],
+["compelling","very convincing; hard to resist","убедительный, неотразимый"],
+["persuasive","convincing","убедительный"],
+["plausible","believable; likely to be true","правдоподобный"],
+["valid","well-founded; sound","обоснованный, действительный"],
+["sound (adj)","reliable; sensible","здравый, обоснованный"],
+["rigorous","strict and careful","строгий, тщательный"],
+["comprehensive","complete; covering everything","всесторонний, исчерпывающий"],
+["extensive","large; wide-ranging","обширный, масштабный"],
+["profound","very deep; far-reaching","глубокий, основательный"],
+["considerable","fairly large","значительный"],
+["negligible","too small to matter","ничтожный, пренебрежимо малый"],
+["marginal","small; of minor importance","незначительный, краевой"],
+["prevalent","common; widely found","распространённый, преобладающий"],
+["widespread","found in many places","широко распространённый"],
+["prominent","important; easily noticed","видный, заметный"],
+["predominant","main; most common","преобладающий"],
+["inevitable","certain to happen; unavoidable","неизбежный"],
+["feasible","possible in practice; workable","осуществимый, выполнимый"],
+["viable","able to work or survive","жизнеспособный, реальный"],
+["beneficial","helpful; good for sb","полезный, благотворный"],
+["detrimental","harmful; damaging","вредный, пагубный"],
+["adverse","negative; unfavourable","неблагоприятный, негативный"],
+["vulnerable","easily harmed; weak","уязвимый, незащищённый"],
+["susceptible (to)","easily affected by","восприимчивый, подверженный"],
+["robust","strong; hard to break","устойчивый, надёжный"],
+["diverse","varied; of many kinds","разнообразный"],
+["distinct","clearly different; separate","отчётливый, отдельный"],
+["subsequent","later; coming after","последующий"],
+["prior (to)","earlier; before","предшествующий, до"],
+["concurrent","happening at the same time","одновременный, параллельный"],
+["arbitrary","random; not based on reason","произвольный"],
+["inherent","natural; built in","присущий, неотъемлемый"],
+["fundamental","basic; forming the base","основополагающий, фундаментальный"],
+["integral","essential; forming a whole part","неотъемлемый, составной"],
+["paramount","more important than anything","первостепенный, важнейший"],
+["abundant","plentiful; more than enough","обильный, изобильный"],
+["scarce","hard to find; in short supply","дефицитный, скудный"],
+["costly","expensive; causing loss","дорогостоящий, затратный"],
+["sophisticated","advanced; complex","сложный, продвинутый"],
+["elaborate (adj)","detailed; carefully worked out","детально проработанный, подробный"],
+["conventional","usual; traditional","общепринятый, традиционный"],
+["contemporary","modern; of today","современный"],
+["unprecedented","never seen before","беспрецедентный"],
+["controversial","causing strong disagreement","спорный, вызывающий споры"],
+["evidence","proof; facts that support","доказательства, данные"],
+["outcome","result; what comes out of sth","результат, исход"],
+["consequence","result; effect","последствие"],
+["implication","possible effect; hidden meaning","последствие; подтекст"],
+["phenomenon","thing that happens and is observed","явление, феномен"],
+["tendency","leaning; usual way of behaving","тенденция, склонность"],
+["trend","general direction of change","тенденция, тренд"],
+["prevalence","how common sth is","распространённость"],
+["proportion","share; part of a whole","доля, часть"],
+["majority","most of a group","большинство"],
+["minority","smaller part of a group","меньшинство"],
+["threshold","limit at which sth starts","порог, предел"],
+["criterion","standard used for judging","критерий"],
+["framework","structure; system of ideas","рамки, структура, концепция"],
+["perspective","point of view; way of seeing","точка зрения, ракурс"],
+["stance","position taken on an issue","позиция"],
+["assumption","sth taken to be true","допущение, предположение"],
+["hypothesis","idea put forward to be tested","гипотеза"],
+["rationale","reasons behind a decision","обоснование, логика"],
+["incentive","reason to act; reward","стимул, побуждение"],
+["constraint","limit; restriction","ограничение"],
+["obstacle","barrier; sth in the way","препятствие"],
+["drawback","disadvantage","недостаток, минус"],
+["shortcoming","fault; weak point","недостаток, изъян"],
+["discrepancy","difference that should not be there","расхождение, несоответствие"],
+["disparity","big difference; inequality","неравенство, разрыв"],
+["correlation","link between two things","корреляция, взаимосвязь"],
+["emphasis","special importance given to sth","акцент, упор"],
+["scope","range covered; extent","охват, рамки"],
+["extent","degree; how far sth goes","степень, мера"],
+["magnitude","size; importance","величина, масштаб"],
+["aspect","part; side of sth","аспект, сторона"],
+["dimension","side; feature of a situation","измерение, аспект"],
+["mechanism","way in which sth works","механизм"],
+["infrastructure","basic systems and facilities","инфраструктура"],
+["expenditure","spending; money spent","расходы, затраты"],
+["revenue","income; money coming in","доход, выручка"],
+["welfare","wellbeing; state support","благосостояние, соцобеспечение"],
+["legislation","laws; law-making","законодательство"],
+["policy","plan of action; course taken","политика (курс), стратегия"],
+["regulation","rule; official control","регулирование, правило"],
+["initiative","new plan; first move","инициатива"],
+["measure (n)","action taken to deal with sth","мера"],
+["alternative","another option","альтернатива, вариант"],
+["exposure","being subject to sth","воздействие, подверженность"],
+["awareness","knowing about sth","осведомлённость, понимание"],
+["expertise","expert skill and knowledge","компетентность, экспертные знания"],
+["competence","ability to do sth well","компетентность, умение"],
+["consensus","general agreement","консенсус, общее согласие"],
+["sustainability","ability to keep going long-term","устойчивость, экологичность"],
+["accommodate","make room for; take account of","вмещать, учитывать"],
+["compensate (for)","make up for","компенсировать, возмещать"],
+["counteract","work against; cancel out","противодействовать, нейтрализовать"],
+["curb","limit; keep under control","обуздывать, сдерживать"],
+["restrict","limit; keep within bounds","ограничивать"],
+["impose","force on sb; put in place","навязывать, вводить"],
+["enforce","make people obey","обеспечивать соблюдение, принуждать"],
+["comply (with)","obey; follow rules","соблюдать, подчиняться"],
+["adhere (to)","stick to; follow closely","придерживаться, соблюдать"],
+["deviate (from)","move away from; differ","отклоняться"],
+["fluctuate","go up and down","колебаться"],
+["stabilise","make steady","стабилизировать"],
+["accelerate","speed up","ускорять(ся)"],
+["deter","put off; stop sb doing sth","сдерживать, отпугивать"],
+["discourage","put sb off; make less likely","отговаривать, препятствовать"],
+["foster","encourage; help to grow","способствовать, воспитывать"],
+["cultivate","develop; build up over time","развивать, культивировать"],
+["reinforce","strengthen; back up","укреплять, усиливать"],
+["consolidate","combine; make stronger","объединять, укреплять"],
+["integrate","combine into a whole","интегрировать, объединять"],
+["differentiate","tell apart; make different","различать, отличать"],
+["distinguish","tell apart; recognise a difference","различать"],
+["categorise","sort into groups","классифицировать"],
+["evaluate","judge the value of","оценивать"],
+["assess","judge; measure","оценивать, давать оценку"],
+["monitor","watch; check over time","отслеживать, контролировать"],
+["scrutinise","examine very closely","тщательно изучать"],
+["investigate","look into; study carefully","исследовать, расследовать"],
+["reveal","show; make known","раскрывать, обнаруживать"],
+["illustrate","show with an example","иллюстрировать, пояснять"],
+["outline","describe the main points of","излагать в общих чертах"],
+["summarise","sum up briefly","резюмировать, кратко излагать"],
+["clarify","make clear","прояснять, уточнять"],
+["refute","prove wrong","опровергать"],
+["dismiss","reject; refuse to consider","отвергать, отклонять"],
+["concede","admit; give way","признавать, уступать"],
+["contend","argue; claim","утверждать, доказывать"],
+["speculate","guess without evidence","строить догадки, предполагать"],
+["attain","achieve; reach","достигать"],
+["yield","produce; give way","давать (результат); уступать"],
+["prompt (v)","cause; make sb do sth","побуждать, вызывать"],
+["trigger","set off; start suddenly","запускать, вызывать"],
+["stem (from)","come from; be caused by","проистекать из, быть следствием"],
+["offset","balance out; cancel","компенсировать, уравновешивать"],
+["outweigh","be greater or more important than","перевешивать"],
+["prioritise","put first; rank by importance","ставить в приоритет"],
+["devote","give (time or effort) to","посвящать, уделять"],
+["exert","apply (effort, influence)","прилагать, оказывать (влияние)"],
+["encompass","include; cover","охватывать, включать"],
+["warrant (v)","justify; make necessary","оправдывать, требовать"]
+];
+const CONS=[
+["Present Perfect","S + have/has + V3","Researchers have identified three main causes of the problem.","A past action with a present result, or an unfinished period of time. Standard for stating findings and current evidence.","Исследователи выявили три основные причины этой проблемы.","Действие в прошлом с результатом в настоящем. Базовая форма для изложения результатов и текущего положения дел."],
+["Present Perfect Continuous","S + have/has been + V-ing","Governments have been debating this issue for over a decade.","An action that started in the past and is still going on; emphasises duration rather than result.","Правительства обсуждают этот вопрос уже более десяти лет.","Действие началось в прошлом и продолжается сейчас; акцент на длительности, а не на результате."],
+["Past Simple + Past Perfect","S + had + V3 (before S + V2)","The company had collapsed before the regulations were introduced.","The earlier of two past events. Use it to make the order of events unambiguous.","Компания рухнула ещё до того, как были введены новые правила.","Более раннее из двух прошедших событий. Нужно, чтобы порядок событий был однозначен."],
+["Future Perfect","S + will have + V3","By 2030 the population will have doubled.","An action completed before a point in the future. Common with by + time.","К 2030 году население удвоится.","Действие завершится к определённому моменту в будущем. Часто с by + время."],
+["Future Perfect Continuous","S + will have been + V-ing","By June she will have been studying English for ten years.","Duration up to a future point: how long something will have been going on.","К июню она будет изучать английский уже десять лет.","Длительность действия к моменту в будущем: сколько времени оно будет продолжаться."],
+["Пассив (Present Simple)","S + am/is/are + V3","These data are collected from several independent sources.","Focus on the action, not the doer. The standard register of academic writing.","Эти данные собираются из нескольких независимых источников.","Фокус на действии, а не на исполнителе. Базовый регистр академического письма."],
+["Пассив (Present Perfect)","S + have/has been + V3","The hypothesis has been tested in a number of studies.","A passive action completed with present relevance; very frequent in literature reviews.","Эта гипотеза была проверена в ряде исследований.","Пассив завершённого действия, значимого сейчас; типично для обзора литературы."],
+["Пассив с модальным глаголом","S + modal + be + V3","Such conclusions must be treated with considerable caution.","Obligation, possibility or advice expressed impersonally.","К таким выводам следует относиться с большой осторожностью.","Долженствование, возможность или совет, выраженные безлично."],
+["Безличный пассив мнения","It is + V3 + that + clause","It is widely believed that early intervention reduces costs.","Reports an opinion without naming who holds it. Ideal for the opening of an argument.","Широко распространено мнение, что раннее вмешательство снижает издержки.","Передаёт мнение, не называя его носителя. Удобно для зачина аргумента."],
+["Пассив с инфинитивом","S + is/are said/thought + to + V","The method is thought to be more reliable than the alternatives.","A second impersonal pattern, slightly more compact than It is thought that…","Считается, что этот метод надёжнее альтернативных.","Второй безличный оборот, чуть компактнее, чем It is thought that…"],
+["Первое условное","If + S + V(s), S + will + V","If the policy succeeds, other countries will adopt it.","A real and likely condition in the future.","Если эта политика окажется успешной, другие страны её переймут.","Реальное и вероятное условие в будущем."],
+["Второе условное","If + S + V2, S + would + V","If governments invested more, the crisis would ease considerably.","A hypothetical present or future situation, contrary to fact.","Если бы правительства вкладывали больше, кризис заметно ослаб бы.","Гипотетическая ситуация в настоящем или будущем, противоречащая фактам."],
+["Третье условное","If + S + had + V3, S + would have + V3","If the warning had been heeded, the damage would have been avoided.","An unreal past: what did not happen and its imagined result.","Если бы к предупреждению прислушались, ущерба удалось бы избежать.","Нереальное прошлое: то, чего не произошло, и воображаемый результат."],
+["Смешанное условное","If + S + had + V3, S + would + V (now)","If she had taken the course, she would be qualified now.","A past condition with a present consequence.","Если бы она прошла этот курс, сейчас у неё была бы квалификация.","Условие в прошлом, следствие в настоящем."],
+["Инверсия вместо if (Had)","Had + S + V3, S + would have + V3","Had the data been published earlier, the debate would have changed.","A formal alternative to the third conditional, with if removed.","Если бы данные опубликовали раньше, дискуссия пошла бы иначе.","Формальная замена третьего условного: if убирается, вспомогательный глагол выходит вперёд."],
+["Инверсия вместо if (Should/Were)","Should + S + V / Were + S + to + V","Should the situation deteriorate, further measures will be required.","A formal way of expressing an unlikely or tentative condition.","Если ситуация ухудшится, потребуются дополнительные меры.","Формальный способ выразить маловероятное или осторожно сформулированное условие."],
+["Инверсия после отрицательных наречий","Never/Rarely/Seldom + aux + S + V","Rarely has a single reform provoked such widespread opposition.","Fronting a negative adverb for emphasis triggers question word order.","Редко когда одна реформа вызывала столь массовое сопротивление.","Отрицательное наречие в начале предложения требует вопросительного порядка слов; приём усиления."],
+["Not only … but also с инверсией","Not only + aux + S + V, but S + also + V","Not only does the programme cut costs, but it also improves access.","Adds a second, stronger point. The inversion marks a high formal register.","Программа не только снижает издержки, но и расширяет доступ.","Добавляет второй, более сильный аргумент. Инверсия маркирует высокий формальный регистр."],
+["Not until / Only when + инверсия","Not until + clause + aux + S + V","Not until the 1990s did the government address the issue.","Emphasises how late something happened; the main clause inverts.","Лишь в 1990-е годы правительство занялось этой проблемой.","Подчёркивает, насколько поздно произошло событие; главное предложение инвертируется."],
+["Эмфатическая конструкция с It","It is/was + X + that/who + …","It is the lack of funding that explains the delay.","Puts one element in focus and names it as the real cause.","Именно нехватка финансирования объясняет эту задержку.","Выделяет один элемент и подаёт его как настоящую причину."],
+["Псевдорасщеплённое предложение","What + S + V + is/does + …","What the study shows is a steady decline in participation.","Fronts the point you are about to make; a smooth way to open a paragraph.","Что действительно показывает исследование, так это устойчивое снижение участия.","Выносит вперёд суть высказывания; удобный способ начать абзац."],
+["Сослагательное наклонение после глаголов требования","It is essential/vital that + S + V (bare)","It is essential that every applicant submit the form on time.","After essential, vital, recommend, insist the verb stays in the bare form, with no -s.","Крайне важно, чтобы каждый заявитель подал форму вовремя.","После essential, vital, recommend, insist глагол стоит в начальной форме без -s."],
+["Would rather / had better","S + would rather + V / had better + V","Policymakers had better consider the long-term effects.","Strong advice (had better) or preference (would rather); both take the bare infinitive.","Тем, кто принимает решения, стоило бы учесть долгосрочные последствия.","Настойчивый совет (had better) или предпочтение (would rather); оба берут инфинитив без to."],
+["Wish / If only","S + wish + S + V2 / had + V3","Many wish the reform had been introduced far sooner.","Regret about the present (past simple) or the past (past perfect).","Многие сожалеют, что реформу не провели гораздо раньше.","Сожаление о настоящем (Past Simple) или о прошлом (Past Perfect)."],
+["Although / Even though","Although + S + V, S + V","Although the evidence is limited, the conclusion appears sound.","Concession: acknowledges a counter-point before your own claim.","Хотя данных немного, вывод представляется обоснованным.","Уступка: признаёт контраргумент перед собственным утверждением."],
+["Despite / In spite of","Despite + noun / V-ing, S + V","Despite receiving substantial funding, the project failed.","Same concession as although, but followed by a noun or -ing form, never a clause.","Несмотря на значительное финансирование, проект провалился.","Та же уступка, что и although, но после — существительное или -ing, не придаточное."],
+["However / Nevertheless","S + V. However, S + V","The costs are high. Nevertheless, the benefits justify the investment.","Links two sentences by contrast; formal, and always separated by a comma.","Издержки высоки. Тем не менее выгоды оправдывают вложения.","Связывает два предложения по контрасту; формально, всегда отделяется запятой."],
+["Whereas / While (контраст)","S + V, whereas + S + V","Urban areas grew rapidly, whereas rural populations declined.","Sets two facts side by side; the standard comparison link in essays.","Городские районы быстро росли, тогда как сельское население сокращалось.","Сопоставляет два факта; основной связующий элемент сравнения в эссе."],
+["The + сравнительная, the + сравнительная","The + comp., the + comp.","The earlier the diagnosis, the better the outcome.","Two things changing together: one rises as the other does.","Чем раньше поставлен диагноз, тем лучше исход.","Две величины меняются вместе: одна растёт вслед за другой."],
+["So / such … that","so + adj + that / such + a + N + that","The results were so consistent that further testing seemed unnecessary.","Cause and result in one sentence, with emphasis on degree.","Результаты были настолько согласованными, что дальнейшая проверка казалась излишней.","Причина и следствие в одном предложении, с акцентом на степень."],
+["Too … to / enough to","too + adj + to + V / adj + enough + to + V","The sample was too small to support any firm conclusion.","Excess or sufficiency for a purpose.","Выборка была слишком мала, чтобы делать твёрдые выводы.","Избыточность или достаточность для некоторой цели."],
+["Определительное придаточное","N + who/which/that + V","The factors that drive migration are largely economic.","Identifies which thing you mean; no commas, and never omit that as subject.","Факторы, определяющие миграцию, в основном экономические.","Уточняет, о каком именно предмете речь; запятые не ставятся, that в роли подлежащего не опускается."],
+["Неопределительное придаточное","N, which + V, …","The reform, which took three years to draft, was rejected.","Adds extra information about something already identified; always between commas.","Реформа, на подготовку которой ушло три года, была отклонена.","Добавляет дополнительную информацию к уже определённому предмету; всегда в запятых."],
+["Квантификатор + of which/whom","…, many/most/some of which + V","The study cited forty sources, most of which were peer-reviewed.","A formal way to comment on part of a set you have just mentioned.","В исследовании приведены сорок источников, большинство из которых рецензируемые.","Формальный способ сказать что-то о части только что упомянутого множества."],
+["Редуцированное определительное придаточное","N + V-ing / V3 + …","Students taught in small groups performed significantly better.","Cuts who/which + be out of a relative clause; makes sentences tighter.","Студенты, обучавшиеся в малых группах, показали заметно лучшие результаты.","Опускает who/which + be в придаточном; делает предложение компактнее."],
+["Причастный оборот (перфектный)","Having + V3, S + V","Having reviewed the literature, the authors propose a new model.","One action finished before another; a formal alternative to after + clause.","Изучив литературу, авторы предлагают новую модель.","Одно действие завершено до другого; формальная замена after + придаточное."],
+["Given that / Considering that","Given that + S + V, S + V","Given that resources are limited, priorities must be set carefully.","States a premise your argument rests on.","Учитывая ограниченность ресурсов, приоритеты нужно расставлять аккуратно.","Вводит посылку, на которой строится аргумент."],
+["Provided that / As long as","Provided that + S + V, S + V","The plan will work provided that funding remains stable.","A condition with a clear limit: only under this circumstance.","План сработает при условии, что финансирование останется стабильным.","Условие с чёткой границей: только при данном обстоятельстве."],
+["Unless","Unless + S + V, S + will + V","Unless emissions fall sharply, the targets will be missed.","A negative condition: if not.","Если выбросы не снизятся резко, цели не будут достигнуты.","Отрицательное условие: если не."],
+["In case / In the event of","In case + S + V / In the event of + N","In the event of a further outbreak, schools will close immediately.","A precaution against a possible future situation.","В случае новой вспышки школы будут немедленно закрыты.","Предосторожность на случай возможной будущей ситуации."],
+["Цель: in order to / so as to","S + V + in order to + V","Data were anonymised in order to protect participants.","States purpose formally; the negative is in order not to / so as not to.","Данные были обезличены, чтобы защитить участников.","Формальное выражение цели; отрицание — in order not to / so as not to."],
+["Цель: so that + модальный","S + V + so that + S + can/could + V","The scale was simplified so that respondents could answer quickly.","Purpose with a different subject in the second clause.","Шкалу упростили, чтобы респонденты могли отвечать быстро.","Цель, когда во второй части другое подлежащее."],
+["Следствие: consequently / as a result","S + V. Consequently, S + V","Funding was withdrawn. Consequently, the trial was suspended.","Marks a result explicitly; formal connector between sentences.","Финансирование было отозвано. Вследствие этого испытание приостановили.","Явно маркирует следствие; формальный связующий элемент между предложениями."],
+["Герундий или инфинитив после глагола","S + V + V-ing / to + V","The committee recommended postponing the decision until spring.","Some verbs take -ing (recommend, avoid, consider), others to + V (agree, aim, fail).","Комитет рекомендовал отложить решение до весны.","Одни глаголы требуют -ing (recommend, avoid, consider), другие — to + V (agree, aim, fail)."],
+["Модальный перфект: must/might have","S + must/might/cannot + have + V3","The decline must have begun long before the crisis.","A deduction about the past: near-certainty (must), possibility (might).","Спад, должно быть, начался задолго до кризиса.","Умозаключение о прошлом: почти уверенность (must), возможность (might)."],
+["Should have + V3","S + should have + V3","The risks should have been assessed before approval was granted.","Criticism or regret about something not done in the past.","Риски следовало оценить до выдачи разрешения.","Критика или сожаление о том, что не было сделано в прошлом."],
+["Used to / would (прошлые привычки)","S + used to + V / would + V","Universities used to rely almost entirely on printed sources.","A past habit or state that is no longer true.","Раньше университеты почти полностью полагались на печатные источники.","Привычка или состояние в прошлом, которых больше нет."],
+["Be likely / bound / unlikely to","S + be likely/bound/unlikely + to + V","Such measures are unlikely to produce immediate results.","Hedged prediction; far more academic than probably.","Такие меры вряд ли дадут немедленный результат.","Осторожный прогноз; гораздо более академично, чем probably."],
+["Каузативный пассив","S + have/get + object + V3","Many institutions have their research assessed by external panels.","Someone else performs the action for the subject.","Многие учреждения отдают свои исследования на оценку внешним комиссиям.","Действие выполняет кто-то другой по поручению подлежащего."],
+["Усиление сравнения","significantly/considerably + comparative","Participation was considerably higher in the second phase.","Quantifies a difference precisely instead of the vague much better.","Участие было заметно выше на втором этапе.","Точно определяет разницу вместо расплывчатого much better."]
+];
+/* ---------- storage ---------- */
+const K='lexicon.v1';
+const ls={
+  get(k,d){try{const v=localStorage.getItem(K+'.'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(K+'.'+k,JSON.stringify(v))}catch(e){}}
+};
+let profiles=ls.get('profiles',['Я']);
+let active=ls.get('active',profiles[0]);
+if(!profiles.includes(active)){active=profiles[0]}
+const blank=()=>({words:{},cons:{},wSess:0,cSess:0});
+let S=ls.get('data.'+active,blank());
+function save(){S.updated=Date.now();ls.set('data.'+active,S);ls.set('profiles',profiles);ls.set('active',active)}
+function switchTo(name){active=name;S=ls.get('data.'+active,blank());save();home()}
+
+/* ---------- helpers ---------- */
+const DAY=864e5, now=()=>Date.now();
+const el=id=>document.getElementById(id);
+const view=()=>el('view');
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const norm=s=>s.toLowerCase().replace(/\([^)]*\)/g,'').replace(/[^a-z ]/g,'').trim();
+
+function pool(type){return type==='w'?WORDS:CONS}
+function rec(type,i){return (type==='w'?S.words:S.cons)[i]}
+function setRec(type,i,v){(type==='w'?S.words:S.cons)[i]=v}
+
+function pickSession(type,nNew,nRev){
+  const P=pool(type), store=type==='w'?S.words:S.cons;
+  const fresh=[],seen=[];
+  for(let i=0;i<P.length;i++){ store[i]?seen.push(i):fresh.push(i) }
+  const items=fresh.slice(0,nNew).map(i=>({i,isNew:true,err:false}));
+  // weighted sample of review items
+  const pooled=seen.map(i=>{
+    const r=store[i];
+    const days=(now()-(r.t||0))/DAY;
+    let w=Math.max(Math.pow(0.9,r.c||0),0.08)*(1+days/2);
+    if(r.e)w*=3;
+    if(!r.l)w*=2;
+    return {i,w};
+  });
+  const rev=[];
+  let need=Math.min(nRev,pooled.length);
+  while(rev.length<need){
+    const tot=pooled.reduce((s,x)=>s+x.w,0);
+    let r=Math.random()*tot,k=0;
+    for(;k<pooled.length;k++){r-=pooled[k].w;if(r<=0)break}
+    k=Math.min(k,pooled.length-1);
+    rev.push({i:pooled[k].i,isNew:false,err:false});
+    pooled.splice(k,1);
+  }
+  // if not enough new words left, top up from review pool
+  let out=items.concat(rev);
+  if(out.length<nNew+nRev){
+    for(const p of pooled){ if(out.length>=nNew+nRev)break; out.push({i:p.i,isNew:false,err:false}) }
+  }
+  return shuffle(out);
+}
+
+function finish(sess){
+  const store=sess.type==='w'?S.words:S.cons;
+  for(const it of sess.items){
+    const r=store[it.i]||{c:0,e:0,l:0};
+    r.t=now();
+    if(it.err){ r.e=1; r.c=0; r.l=0 }
+    else if(it.wrote){ r.c=(r.c||0)+1; r.e=0; r.l=1 }
+    else { r.l=r.l||0 }   // пропуск: без штрафа, но и без зачёта
+    store[it.i]=r;
+  }
+  if(sess.type==='w')S.wSess=now(); else S.cSess=now();
+  save(); pushSync();
+}
+
+/* ---------- home ---------- */
+function ago(ts){
+  if(!ts)return 'ещё не проходили';
+  const h=(now()-ts)/36e5;
+  if(h<1)return 'меньше часа назад';
+  if(h<24)return Math.round(h)+' ч назад';
+  return Math.round(h/24)+' дн назад';
+}
+function stats(type){
+  const store=type==='w'?S.words:S.cons;
+  let total=0,err=0,mast=0,learned=0;
+  for(const k in store){total++;const r=store[k];if(r.e)err++;else if(r.l){learned++;if(r.c>=5)mast++}}
+  return {total,err,mast,learned};
+}
+function home(){
+  renderProfiles();
+  const wDue=now()-(S.wSess||0)>DAY, cDue=now()-(S.cSess||0)>DAY;
+  const ws=stats('w'), cs=stats('c');
+  view().innerHTML=`
+  <div class="tiles">
+    <button class="tile ${wDue?'due':'done'}" id="goW">
+      <span class="dot"></span>
+      <h2>Слова</h2>
+      <p>15 новых и 5 на повторение: карточки, сопоставление, письмо по памяти.</p>
+      <div class="status">${wDue?'Сегодня ещё не занимались':'Пройдено '+ago(S.wSess)}</div>
+    </button>
+    <button class="tile ${cDue?'due':'done'}" id="goC">
+      <span class="dot"></span>
+      <h2>Конструкции</h2>
+      <p>8 новых и 2 на повторение: карточки, сопоставление, сборка предложения.</p>
+      <div class="status">${cDue?'Сегодня ещё не занимались':'Пройдено '+ago(S.cSess)}</div>
+    </button>
+  </div>
+  <div class="row2">
+    <button class="mini" id="dictW"><b>Словарь слов</b><span>${ws.learned} выучено из ${ws.total} · ${ws.err} с ошибкой · ${ws.mast} закреплено</span></button>
+    <button class="mini" id="dictC"><b>Список конструкций</b><span>${cs.learned} выучено из ${cs.total} · ${cs.err} с ошибкой · ${cs.mast} закреплено</span></button>
+  </div>
+  <div class="row2" style="margin-top:14px">
+    <button class="mini" id="goSync"><b>Синхронизация</b><span>${esc(syncLabel())}</span></button>
+  </div>
+  <div class="legend">
+    <span class="sw" style="background:var(--muted)"></span>встретилось, но ещё не написано по памяти<br>
+    <span class="sw" style="background:var(--white)"></span>выучено — написано по памяти без ошибок<br>
+    <span class="sw" style="background:var(--red)"></span>была ошибка — вернётся в ближайших заданиях<br>
+    <span class="sw" style="background:var(--gold)"></span>пять верных повторов подряд — встречается редко
+  </div>`;
+  el('goW').onclick=()=>start('w');
+  el('goC').onclick=()=>start('c');
+  el('dictW').onclick=()=>dict('w');
+  el('dictC').onclick=()=>dict('c');
+  el('goSync').onclick=()=>settings();
+}
+function renderProfiles(){
+  const box=el('pfBox');
+  if(sbState==='on'){
+    const mail=(sbUser&&sbUser.email)||'аккаунт';
+    box.innerHTML=`<span title="${esc(mail)}">☁ ${esc(mail.split('@')[0])}</span><button class="linkbtn" id="pfOut">выйти</button>`;
+    el('pfOut').onclick=signOut;
+    return;
+  }
+  const extra = sbState==='out'
+      ? '<button class="linkbtn" id="pfIn">войти</button>'
+      : sbState==='err'
+        ? '<button class="linkbtn" id="pfCfg" style="color:var(--red)">ошибка синхронизации</button>'
+        : '';
+  box.innerHTML=`<select class="pf" id="pfSel">${profiles.map(p=>`<option${p===active?' selected':''}>${esc(p)}</option>`).join('')}</select>
+    <button class="linkbtn" id="pfAdd">+ профиль</button>${extra}`;
+  const s=el('pfSel');
+  s.onchange=()=>switchTo(s.value);
+  el('pfAdd').onclick=()=>{
+    const n=(prompt('Имя профиля')||'').trim();
+    if(!n||profiles.includes(n))return;
+    profiles.push(n);active=n;S=blank();save();home();
+  };
+  if(el('pfIn'))el('pfIn').onclick=()=>settings();
+  if(el('pfCfg'))el('pfCfg').onclick=()=>settings();
+}
+
+/* ---------- session shell ---------- */
+let sess=null;
+function start(type){
+  sess=type==='w'?{type,items:pickSession('w',15,5),stage:0,idx:0}
+                 :{type,items:pickSession('c',8,2),stage:0,idx:0};
+  if(!sess.items.length){view().innerHTML='<div class="empty">Пул закончился — всё пройдено.</div>';return}
+  sess.rounds=chunk(shuffle(sess.items.map(x=>x.i)),5);
+  sess.round=0;
+  cards();
+}
+function chunk(a,n){const o=[];for(let i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o}
+function bar(step,pct){
+  return `<div class="bar"><div class="step">${step}</div><button class="linkbtn" onclick="home()">Выйти</button></div>
+  <div class="prog"><i style="width:${pct}%"></i></div>`;
+}
+
+/* ---------- stage 1: flashcards ---------- */
+function cards(){
+  const w=sess.type==='w';
+  const it=sess.items[sess.idx], d=pool(sess.type)[it.i];
+  const body = w
+   ? `<div class="term">${esc(d[0])}</div>
+      <button class="reveal" data-r="syn">Показать синоним</button>
+      <button class="reveal" data-r="ru">Показать перевод</button>`
+   : `<div class="term sent">${esc(d[2])}</div>
+      <button class="reveal" data-r="f">Показать формулу и объяснение</button>
+      <button class="reveal" data-r="ru">Показать перевод и объяснение</button>`;
+  view().innerHTML = bar(`Этап 1 из 3 · карточки${it.isNew?'':' · повторение'}`, (sess.idx+1)/sess.items.length*100)
+   + `<div class="card" id="card">${body}</div>
+      <div class="nav">
+        <button class="arrow" id="prev" ${sess.idx===0?'disabled':''}>←</button>
+        <span class="count">${sess.idx+1} / ${sess.items.length}</span>
+        <button class="arrow" id="next" ${sess.idx===sess.items.length-1?'disabled':''}>→</button>
+      </div>
+      <button class="btn" id="learned">Я выучил — к заданиям</button>`;
+  el('prev').onclick=()=>{sess.idx--;cards()};
+  el('next').onclick=()=>{sess.idx++;cards()};
+  el('learned').onclick=()=>{sess.round=0;matching()};
+  view().querySelectorAll('.reveal').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.r;
+    let html='';
+    if(w&&k==='syn')html=`<span class="lab">Проще говоря</span><span class="val en">${esc(d[1])}</span>`;
+    if(w&&k==='ru')html=`<span class="lab">Перевод</span><span class="val">${esc(d[2])}</span>`;
+    if(!w&&k==='f')html=`<span class="lab">${esc(d[0])}</span><span class="val mono">${esc(d[1])}</span><span class="val" style="margin-top:8px;display:block">${esc(d[3])}</span>`;
+    if(!w&&k==='ru')html=`<span class="lab">Перевод</span><span class="val">${esc(d[4])}</span><span class="val" style="margin-top:8px;display:block;color:var(--muted)">${esc(d[5])}</span>`;
+    b.className='reveal shown';b.innerHTML=html;
+  });
+}
+
+/* ---------- stage 2: matching ---------- */
+let mstate=null;
+function matching(){
+  const ids=sess.rounds[sess.round];
+  const w=sess.type==='w';
+  const useSyn = w && sess.round%2===1;
+  mstate={ids,left:ids.slice(),right:shuffle(ids.slice()),done:[],sel:null};
+  drawMatch(useSyn);
+}
+function drawMatch(useSyn){
+  const w=sess.type==='w', P=pool(sess.type);
+  const leftTxt=i=>w?P[i][0]:trim(P[i][2]);
+  const rightTxt=i=>w?(useSyn?P[i][1]:P[i][2]):P[i][1];
+  const totalRounds=sess.rounds.length;
+  const hint=w?(useSyn?'Сопоставьте слово с более простым синонимом':'Сопоставьте слово с переводом')
+              :'Сопоставьте предложение с формулой конструкции';
+  view().innerHTML=bar(`Этап 2 из 3 · сопоставление · блок ${sess.round+1} из ${totalRounds}`,(sess.round)/totalRounds*100)
+   +`<div class="hint">${hint}. Ошибка сбрасывает текущий блок.</div>
+     <div class="cols">
+       <div id="colL">${mstate.left.map(i=>`<button class="opt ${w?'en':''}" data-s="L" data-i="${i}">${esc(leftTxt(i))}</button>`).join('')}</div>
+       <div id="colR">${mstate.right.map(i=>`<button class="opt ${!w?'f':''}" data-s="R" data-i="${i}">${esc(rightTxt(i))}</button>`).join('')}</div>
+     </div>`;
+  view().querySelectorAll('.opt').forEach(b=>{
+    if(mstate.done.includes(+b.dataset.i))b.classList.add('gone');
+    b.onclick=()=>clickOpt(b,useSyn);
+  });
+}
+function trim(s){return s.length>58?s.slice(0,56)+'…':s}
+function clickOpt(b,useSyn){
+  if(mstate.lock)return;
+  const side=b.dataset.s, i=+b.dataset.i;
+  if(mstate.sel===null){ if(side!=='L')return; mstate.sel=i; b.classList.add('sel'); return }
+  if(side==='L'){ view().querySelectorAll('.opt.sel').forEach(x=>x.classList.remove('sel')); mstate.sel=i; b.classList.add('sel'); return }
+  if(i===mstate.sel){
+    mstate.done.push(i);
+    view().querySelectorAll(`.opt[data-i="${i}"]`).forEach(x=>{x.classList.remove('sel');x.classList.add('gone')});
+    mstate.sel=null;
+    if(mstate.done.length===mstate.ids.length){
+      sess.round++;
+      setTimeout(()=>{ sess.round<sess.rounds.length?matching():startRecall() },320);
+    }
+  }else{
+    const it=sess.items.find(x=>x.i===mstate.sel); if(it)it.err=true;
+    b.classList.add('bad');
+    const right=view().querySelector(`.opt[data-s="R"][data-i="${mstate.sel}"]`);
+    if(right)right.classList.add('good');
+    mstate.lock=true;
+    setTimeout(()=>{ mstate.done=[]; mstate.sel=null; mstate.lock=false; mstate.left=shuffle(mstate.ids); mstate.right=shuffle(mstate.ids); drawMatch(useSyn) },3000);
+  }
+}
+
+/* ---------- stage 3 ---------- */
+function startRecall(){ sess.idx=0; sess.type==='w'?recall():builder() }
+
+function recall(){
+  const it=sess.items[sess.idx], d=WORDS[it.i];
+  view().innerHTML=bar(`Этап 3 из 3 · по памяти`, sess.idx/sess.items.length*100)
+   +`<div class="prompt">
+       <div class="lab">Перевод</div><div class="big">${esc(d[2])}</div>
+       <div class="lab" style="margin-top:14px">Синоним</div><div class="big" style="font-family:var(--serif)">${esc(d[1])}</div>
+     </div>
+     <input type="text" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="напишите слово">
+     <div class="fb" id="fb"></div>
+     <button class="btn" id="check">Проверить</button>
+     <button class="btn ghost" id="skip">Пропустить</button>`;
+  const inp=el('ans'); inp.focus();
+  inp.onkeydown=e=>{if(e.key==='Enter')el('check').click()};
+  el('check').onclick=()=>{
+    if(el('check').disabled)return;
+    const ok=norm(inp.value)===norm(d[0]);
+    if(ok)it.wrote=true; else it.err=true;
+    el('fb').className='fb '+(ok?'ok':'no');
+    if(ok){ el('fb').textContent='Верно'; el('check').disabled=true; setTimeout(nextRecall,550) }
+    else{
+      const typed=inp.value.trim();
+      el('fb').innerHTML=`Правильный ответ: <b>${esc(d[0])}</b>`+(typed?`<br><span style="color:var(--muted)">вы написали: ${esc(typed)}</span>`:'');
+      toNext();
+    }
+  };
+  el('skip').onclick=()=>{
+    el('fb').className='fb no';
+    el('fb').innerHTML=`Нужное слово: <b>${esc(d[0])}</b>`;
+    toNext();
+  };
+}
+function toNext(){
+  const b=el('check'); b.disabled=false; b.textContent='Далее'; b.onclick=nextRecall;
+  const s=el('skip'); if(s)s.classList.add('hidden');
+  const a=el('ans'); if(a)a.disabled=true;
+  const sl=el('slot'); if(sl)sl.style.pointerEvents='none';
+}
+function nextRecall(){
+  sess.idx++;
+  if(sess.idx>=sess.items.length)return done();
+  sess.type==='w'?recall():builder();
+}
+
+function builder(){
+  const it=sess.items[sess.idx], d=CONS[it.i];
+  const target=d[2].replace(/\.$/,'').split(' ');
+  const others=CONS.filter((_,k)=>k!==it.i).flatMap(c=>c[2].replace(/\.$/,'').split(' '));
+  const extra=shuffle(others.filter(x=>!target.includes(x)&&x.length>2)).slice(0,3);
+  const bank=shuffle(target.concat(extra));
+  let placed=[];
+  view().innerHTML=bar(`Этап 3 из 3 · соберите предложение`, sess.idx/sess.items.length*100)
+   +`<div class="prompt"><div class="lab">Переведите на английский</div><div class="big">${esc(d[4])}</div></div>
+     <div class="slot" id="slot"></div>
+     <div class="bank" id="bank">${bank.map((t,k)=>`<button class="tok" data-k="${k}">${esc(t)}</button>`).join('')}</div>
+     <div class="fb" id="fb"></div>
+     <button class="btn" id="check">Проверить</button>
+     <button class="btn ghost" id="skip">Пропустить</button>`;
+  const redraw=()=>{
+    el('slot').innerHTML=placed.map((p,n)=>`<button class="tok" data-n="${n}">${esc(bank[p])}</button>`).join('');
+    el('slot').querySelectorAll('.tok').forEach(b=>b.onclick=()=>{
+      const n=+b.dataset.n; const k=placed[n]; placed.splice(n,1);
+      el('bank').querySelector(`.tok[data-k="${k}"]`).classList.remove('used'); redraw();
+    });
+  };
+  el('bank').querySelectorAll('.tok').forEach(b=>b.onclick=()=>{
+    b.classList.add('used'); placed.push(+b.dataset.k); redraw();
+  });
+  el('check').onclick=()=>{
+    if(el('check').disabled)return;
+    const got=placed.map(p=>bank[p]).join(' ');
+    const ok=got.toLowerCase()===target.join(' ').toLowerCase();
+    if(ok)it.wrote=true; else it.err=true;
+    el('fb').className='fb '+(ok?'ok':'no');
+    if(ok){ el('fb').textContent='Верно'; el('check').disabled=true; setTimeout(nextRecall,550) }
+    else{
+      el('fb').innerHTML=`Правильный вариант: <b>${esc(d[2])}</b>`+(got?`<br><span style="color:var(--muted)">вы собрали: ${esc(got)}</span>`:'');
+      el('bank').classList.add('hidden'); toNext();
+    }
+  };
+  el('skip').onclick=()=>{
+    el('fb').className='fb no';
+    el('fb').innerHTML=`Нужно было собрать: <b>${esc(d[2])}</b>`;
+    el('bank').classList.add('hidden'); toNext();
+  };
+}
+
+/* ---------- done ---------- */
+function done(){
+  finish(sess);
+  const bad=sess.items.filter(x=>x.err).length, good=sess.items.filter(x=>x.wrote&&!x.err).length,
+        skipped=sess.items.length-bad-good;
+  view().innerHTML=`<div class="done-wrap">
+    <h2>Занятие закрыто</h2>
+    <p>Выучено: ${good} из ${sess.items.length}</p>
+    <p>${bad?'С ошибкой: '+bad+' — помечены красным и вернутся в ближайших блоках.':'Ошибок нет.'}</p>
+    ${skipped?'<p>Пропущено: '+skipped+' — остаются невыученными и попадутся снова.</p>':''}
+    <button class="btn" style="max-width:280px;margin:22px auto 0" onclick="home()">На главную</button>
+    <button class="btn ghost" style="max-width:280px;margin:10px auto 0" onclick="dict('${sess.type}')">Открыть словарь</button>
+  </div>`;
+}
+
+/* ---------- dictionary ---------- */
+function dict(type){
+  const P=pool(type), store=type==='w'?S.words:S.cons;
+  const ids=Object.keys(store).map(Number).sort((a,b)=>{
+    const ra=store[a],rb=store[b];
+    return (rb.e||0)-(ra.e||0) || (rb.t||0)-(ra.t||0);
+  });
+  const rows=ids.map(i=>{
+    const r=store[i],d=P[i];
+    const cls=r.e?'err':(!r.l?'raw':(r.c>=5?'mast':''));
+    const hw=type==='w'?d[0]:d[0];
+    const sub=type==='w'?`${d[1]} · ${d[2]}`:`${d[1]} — ${d[4]}`;
+    const meta=r.e?'ошибка':(!r.l?'не написано':(r.c>=5?'закреплено':'верно '+r.c+'×'));
+    return `<div class="entry ${cls}"><span class="mark"></span><div><div class="hw">${esc(hw)}</div><div class="sub">${esc(sub)}</div></div><div class="meta">${meta}</div></div>`;
+  }).join('');
+  view().innerHTML=`<div class="bar"><div class="step">${type==='w'?'Словарь':'Конструкции'}</div><button class="linkbtn" onclick="home()">На главную</button></div>
+    <div class="tabs"><button class="tab ${type==='w'?'on':''}" onclick="dict('w')">Слова</button><button class="tab ${type==='c'?'on':''}" onclick="dict('c')">Конструкции</button></div>
+    ${rows||'<div class="empty">Пока пусто. Пройдите первое занятие.</div>'}`;
+}
+
+/* ---------- Supabase: вход по почте и паролю, синхронизация ---------- */
+let sb=null, sbUser=null, sbState='off', sbMsg='';
+const sbCfg=()=>ls.get('supa',null);
+function loadScript(src){return new Promise((res,rej)=>{
+  const t=document.createElement('script');t.src=src;t.onload=res;t.onerror=()=>rej(new Error('не загрузился '+src));
+  document.head.appendChild(t);
+})}
+function localBackup(){
+  const data={};
+  for(const p of profiles) data[p]=ls.get('data.'+p,blank());
+  return {profiles,data,at:now()};
+}
+function mergeState(a,b){
+  a=a||blank(); b=b||blank();
+  const out={words:{},cons:{},wSess:Math.max(a.wSess||0,b.wSess||0),cSess:Math.max(a.cSess||0,b.cSess||0)};
+  for(const g of ['words','cons']){
+    const ka=a[g]||{}, kb=b[g]||{};
+    for(const k of new Set([...Object.keys(ka),...Object.keys(kb)])){
+      const ra=ka[k], rb=kb[k];
+      out[g][k]= !ra?rb : !rb?ra : ((rb.t||0)>(ra.t||0)?rb:ra);
+    }
+  }
+  return out;
+}
+function applyBackup(remote){
+  if(!remote||!remote.data)return false;
+  let changed=false;
+  for(const name in remote.data){
+    const local=ls.get('data.'+name,null);
+    const merged=mergeState(local,remote.data[name]);
+    ls.set('data.'+name,merged);
+    if(!profiles.includes(name)){profiles.push(name);changed=true}
+    if(name===active){S=merged;changed=true}
+  }
+  ls.set('profiles',profiles);
+  return true;
+}
+async function initSync(silent){
+  const c=sbCfg();
+  if(!c||!c.url||!c.key){sbState='off';return}
+  try{
+    if(!window.supabase) await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js');
+    sb=window.supabase.createClient(c.url,c.key);
+    const {data}=await sb.auth.getSession();
+    sbUser=data&&data.session?data.session.user:null;
+    if(sbUser){ sbState='on'; await pullSync(); } else { sbState='out' }
+  }catch(e){ sbState='err'; sbMsg=e.message }
+  if(!silent&&typeof settings==='function'&&document.getElementById('syncBox'))settings();
+}
+async function signIn(email,pass){
+  if(!sb)await initSync(true);
+  if(!sb)return {error:{message:'сначала сохраните URL и ключ'}};
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(!error&&data&&data.user){sbUser=data.user;sbState='on';await pullSync();await pushSync()}
+  return {error};
+}
+async function signUp(email,pass){
+  if(!sb)await initSync(true);
+  if(!sb)return {error:{message:'сначала сохраните URL и ключ'}};
+  const {data,error}=await sb.auth.signUp({email,password:pass});
+  if(error)return {error};
+  if(data&&data.session){sbUser=data.user;sbState='on';await pushSync();return {error:null}}
+  return {error:null,confirm:true};
+}
+async function signOut(){ if(sb)await sb.auth.signOut(); sbUser=null; sbState='out'; settings() }
+async function pullSync(){
+  if(!sb||!sbUser)return;
+  try{
+    const {data,error}=await sb.from('progress').select('data').eq('user_id',sbUser.id).maybeSingle();
+    if(error)throw error;
+    if(data&&data.data) applyBackup(data.data);
+    ls.set('lastSync',now());
+  }catch(e){sbState='err';sbMsg=e.message||'нет связи с сервером'}
+}
+async function pushSync(){
+  if(!sb||!sbUser)return;
+  try{
+    const {error}=await sb.from('progress').upsert({user_id:sbUser.id,data:localBackup(),updated_at:new Date().toISOString()});
+    if(error)throw error;
+    ls.set('lastSync',now());
+  }catch(e){sbState='err';sbMsg=e.message||'нет связи с сервером'}
+}
+function syncLabel(){
+  if(sbState==='on')return 'синхронизировано · '+(sbUser.email||'');
+  if(sbState==='out')return 'сервер указан, вход не выполнен';
+  if(sbState==='err')return 'ошибка: '+sbMsg;
+  return 'только это устройство';
+}
+function settings(){
+  const c=sbCfg()||{url:'',key:''};
+  view().innerHTML=`<div class="bar"><div class="step">Синхронизация</div><button class="linkbtn" onclick="home()">На главную</button></div>
+  <div id="syncBox">
+    <div class="hint">Прогресс хранится в браузере. Чтобы он ходил между устройствами, подключите проект Supabase и войдите по почте и паролю. Каждый аккаунт видит только свой прогресс.</div>
+    <div class="prompt">
+      <div class="lab">Project URL</div>
+      <input type="text" id="sUrl" placeholder="https://xxxx.supabase.co" value="${esc(c.url||'')}" style="font-family:var(--sans);font-size:15px;margin-bottom:12px">
+      <div class="lab">Anon public key</div>
+      <input type="text" id="sKey" placeholder="eyJhbGci..." value="${esc(c.key||'')}" style="font-family:var(--sans);font-size:15px">
+      <div class="fb" style="color:var(--muted);margin-top:12px">Статус: ${esc(syncLabel())}</div>
+    </div>
+    <button class="btn" id="sSave">Сохранить сервер</button>
+    ${sbState==='on'
+      ? `<button class="btn ghost" id="sNow">Синхронизировать сейчас</button><button class="btn ghost" id="sOut">Выйти из аккаунта</button>`
+      : `<div class="prompt" style="margin-top:18px">
+           <div class="lab">Почта</div>
+           <input type="text" id="sMail" autocomplete="username" placeholder="you@mail.com" style="font-family:var(--sans);font-size:15px;margin-bottom:12px">
+           <div class="lab">Пароль (не короче 6 символов)</div>
+           <input type="password" id="sPass" autocomplete="current-password" style="font-family:var(--sans);font-size:15px">
+           <div class="fb" id="sMsg" style="margin-top:10px"></div>
+         </div>
+         <button class="btn" id="sIn">Войти</button>
+         <button class="btn ghost" id="sUp">Создать аккаунт</button>`}
+    <div class="legend">Таблица в Supabase создаётся один раз:<br>
+      <span class="mono" style="display:block;white-space:pre-wrap;margin-top:8px;font-size:12px">create table progress (
+  user_id uuid primary key references auth.users on delete cascade,
+  data jsonb not null,
+  updated_at timestamptz default now()
+);
+alter table progress enable row level security;
+create policy "own row" on progress for all
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);</span>
+    </div>
+  </div>`;
+  el('sSave').onclick=async()=>{
+    ls.set('supa',{url:el('sUrl').value.trim().replace(/\/$/,''),key:el('sKey').value.trim()});
+    sb=null;sbUser=null;await initSync(true);settings();
+  };
+  const creds=()=>[el('sMail').value.trim(),el('sPass').value];
+  const say=(t,bad)=>{const m=el('sMsg');if(m){m.className='fb '+(bad?'no':'ok');m.textContent=t}};
+  if(el('sIn'))el('sIn').onclick=async()=>{
+    const [m,p]=creds(); if(!m||!p)return say('Введите почту и пароль',true);
+    say('Входим…');
+    const {error}=await signIn(m,p);
+    if(error)return say(authMsg(error.message),true);
+    settings();
+  };
+  if(el('sUp'))el('sUp').onclick=async()=>{
+    const [m,p]=creds(); if(!m||p.length<6)return say('Почта и пароль не короче 6 символов',true);
+    say('Создаём аккаунт…');
+    const r=await signUp(m,p);
+    if(r.error)return say(authMsg(r.error.message),true);
+    if(r.confirm)return say('Аккаунт создан. Подтвердите адрес по письму, затем войдите.');
+    settings();
+  };
+  if(el('sOut'))el('sOut').onclick=signOut;
+  if(el('sNow'))el('sNow').onclick=async()=>{await pullSync();await pushSync();settings()};
+}
+function authMsg(m){
+  m=(m||'').toLowerCase();
+  if(m.includes('invalid login'))return 'Неверная почта или пароль';
+  if(m.includes('already registered'))return 'Такой аккаунт уже есть — нажмите «Войти»';
+  if(m.includes('not confirmed'))return 'Адрес не подтверждён — проверьте почту';
+  if(m.includes('password'))return 'Пароль слишком короткий';
+  if(m.includes('failed to fetch'))return 'Нет связи с сервером: проверьте URL и ключ';
+  return m||'Не удалось выполнить вход';
+}
+
+home();
+initSync(true).then(()=>{ if(document.querySelector('.tiles'))home() }).catch(()=>{});
+
+</script>
+</body>
+</html>
